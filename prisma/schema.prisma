@@ -1,0 +1,41 @@
+// schema.prisma
+
+// This defines the datasource for your database
+datasource db {
+  provider = "postgresql"  // This defines the database provider, PostgreSQL in your case
+  url      = env("DATABASE_URL")  // This points to your database connection URL from the .env file
+}
+
+// This defines the generator for Prisma Client
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Your existing models (User and Video)
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  videos    Video[]
+  createdAt DateTime @default(now())
+}
+
+model Video {
+  id        String   @id @default(uuid())
+  url       String
+  uploader  User     @relation(fields: [uploaderId], references: [id])
+  uploaderId String
+  createdAt DateTime @default(now())
+}
+
+model Like {
+  id        String @id @default(uuid())
+  userId    String
+  videoId   String
+}
+
+model Comment {
+  id        String @id @default(uuid())
+  userId    String
+  videoId   String
+  content   String
+}
